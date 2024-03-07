@@ -88,12 +88,12 @@ SELECT customers.firstname, customers.lastname, COUNT(orders.id) FROM customers 
 
 \echo - Find all customers who have spent more than 300 in total across all their orders.
 -- --
-SELECT customers.firstname, customers.lastname, customers.email, SUM(orders.total) FROM customers JOIN orders ON orders.customer_id = customers.id WHERE total > 300 GROUP BY customers.firstname, customers.lastname, customers.email;
+SELECT customers.firstname, customers.lastname, customers.email, SUM(orders.total) FROM customers JOIN orders ON orders.customer_id = customers.id GROUP BY customers.firstname, customers.lastname, customers.email HAVING SUM(orders.total) > 300;
 
 -- --
 
 
 \echo - For each order, list the order total alongside the email of the customer, include only orders with totals above 400.
 -- --
-SELECT customers.email, orders.total FROM orders Left JOIN customers ON orders.customer_id = customers.id WHERE orders.total > 400;
+SELECT customers.email, orders.total FROM orders LEFT JOIN customers ON orders.customer_id = customers.id WHERE orders.total > 400;
 -- --
