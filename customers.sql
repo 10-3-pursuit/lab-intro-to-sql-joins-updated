@@ -26,11 +26,11 @@ CREATE DATABASE purchases;
 
 \echo - Uncomment the code below to add records to the customers table
 INSERT INTO customers (firstname, lastname, email) VALUES
-('Alex', 'Taylor', 'alex.taylor@example.com'),
-('Jordan', 'Lee', 'jordan.lee@example.com'),
-('Casey', 'Morgan', 'casey.morgan@example.com'),
-('Riley', 'Quinn', 'riley.quinn@example.com'),
-('Taylor', 'Morgan', 'taylor.morgan@example.com');
+-- ('Alex', 'Taylor', 'alex.taylor@example.com'),
+-- ('Jordan', 'Lee', 'jordan.lee@example.com'),
+-- ('Casey', 'Morgan', 'casey.morgan@example.com'),
+-- ('Riley', 'Quinn', 'riley.quinn@example.com'),
+-- ('Taylor', 'Morgan', 'taylor.morgan@example.com');
 
 
 
@@ -47,12 +47,12 @@ INSERT INTO customers (firstname, lastname, email) VALUES
 
 \echo - Uncomment the code below to add records to the customers table
 INSERT INTO orders (customer_id, total, is_paid) VALUES
-(1, 250, TRUE),
-(2, 190, FALSE),
-(3, 300, TRUE),
-(1, 450, TRUE),
-(4, 120, FALSE),
-(2, 580, TRUE);
+-- (1, 250, TRUE),
+-- (2, 190, FALSE),
+-- (3, 300, TRUE),
+-- (1, 450, TRUE),
+-- (4, 120, FALSE),
+-- (2, 580, TRUE);
 
 
 
