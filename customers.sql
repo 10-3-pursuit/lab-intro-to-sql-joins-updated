@@ -134,7 +134,7 @@ SELECT * FROM customers INNER JOIN orders ON customers.id = orders.id;
 
 -- Show a list of firstname, lastname for customers along with the number of orders they have made, including those customers who have not made any orders.
 -- --
-purchases=# SELECT customers.firstname, customers.lastname, COUNT(orders.id) FROM customers LEFT JOIN orders ON customers.id = orders.customerid GROUP BY customers.id, customers.firstname, customers.lastname;
+SELECT customers.firstname, customers.lastname, COUNT(orders.id) FROM customers LEFT JOIN orders ON customers.id = orders.customerid GROUP BY customers.id, customers.firstname, customers.lastname;
  firstname | lastname | count
 -----------+----------+-------
  Taylor    | Morgan   |     0
@@ -143,12 +143,26 @@ purchases=# SELECT customers.firstname, customers.lastname, COUNT(orders.id) FRO
  Alex      | Taylor   |     2
  Casey     | Morgan   |     1
 (5 rows)
-
+--without including customers.id in the GROUP BY key word:
+SELECT customers.firstname, customers.lastname, COUNT(orders.id) FROM customers LEFT JOIN orders ON customers.id = orders.customerid GROUP BY customers.firstname, customers.lastname;
+ firstname | lastname | count
+-----------+----------+-------
+ Alex      | Taylor   |     2
+ Casey     | Morgan   |     1
+ Taylor    | Morgan   |     0
+ Jordan    | Lee      |     2
+ Riley     | Quinn    |     1
+(5 rows)
 -- --
 
 \echo - Find all customers who have spent more than 300 in total across all their orders.
 -- --
-
+purchases=# SELECT customers.id, customers.firstname, customers.lastname, SUM(orders.total) FROM customers INNER JOIN orders ON customers.id = orders.customerid GROUP BY customers.id HAVING SUM(orders.total) > 300;
+ id | firstname | lastname | sum
+----+-----------+----------+-----
+  2 | Jordan    | Lee      | 770
+  1 | Alex      | Taylor   | 700
+(2 rows)
 -- --
 
 
