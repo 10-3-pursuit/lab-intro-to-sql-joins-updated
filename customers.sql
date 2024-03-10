@@ -9,43 +9,63 @@ CREATE DATABASE purchases;
 
 
 --
-\echo - Create a table called customers
+-- Create a table called customers
  -- with the following columns
 -- id serial primary KEY
 -- firstname - string with 20 characters
 -- lastname - string with 50 characters
 -- email - string with 30 characters(unable to be null)
 --
+CREATE TABLE customers (id SERIAL PRIMARY KEY, firstname VARCHAR(20), lastname VARCHAR(50), email VARCHAR(30) NOT NULL);
+CREATE TABLE
 
 --
 
-\echo See details of the table you created
+-- See details of the table you created
 -- 
+ \d customers
+                                     Table "public.customers"
+  Column   |         Type          | Collation | Nullable |                Default
+-----------+-----------------------+-----------+----------+---------------------------------------
+ id        | integer               |           | not null | nextval('customers_id_seq'::regclass)
+ firstname | character varying(20) |           |          |
+ lastname  | character varying(50) |           |          |
+ email     | character varying(30) |           | not null |
+Indexes:
+    "customers_pkey" PRIMARY KEY, btree (id)
 
+(END)
 --
 
-\echo - Uncomment the code below to add records to the customers table
--- INSERT INTO customers (firstname, lastname, email) VALUES
--- ('Alex', 'Taylor', 'alex.taylor@example.com'),
--- ('Jordan', 'Lee', 'jordan.lee@example.com'),
--- ('Casey', 'Morgan', 'casey.morgan@example.com'),
--- ('Riley', 'Quinn', 'riley.quinn@example.com'),
--- ('Taylor', 'Morgan', 'taylor.morgan@example.com');
+-- Uncomment the code below to add records to the customers table
+INSERT INTO customers (firstname, lastname, email) VALUES
+('Alex', 'Taylor', 'alex.taylor@example.com'),
+('Jordan', 'Lee', 'jordan.lee@example.com'),
+('Casey', 'Morgan', 'casey.morgan@example.com'),
+('Riley', 'Quinn', 'riley.quinn@example.com'),
+('Taylor', 'Morgan', 'taylor.morgan@example.com');
+-- Uncomment the code below to add records to the customers table
+INSERT INTO customers (firstname, lastname, email) VALUES
+('Alex', 'Taylor', 'alex.taylor@example.com'),
+('Jordan', 'Lee', 'jordan.lee@example.com'),
+('Casey', 'Morgan', 'casey.morgan@example.com'),
+('Riley', 'Quinn', 'riley.quinn@example.com'),
+('Taylor', 'Morgan', 'taylor.morgan@example.com');
+INSERT 0 5
 
 
-
-
-\echo - Create a table called orders
- with the following columns
+-- Create a table called orders with the following columns
+-- Note: If no default value is declared explicitly, the default value is the null value. This usually makes sense because a null value can be considered to represent unknown data. https://www.postgresql.org/docs/current/ddl-default.html#:~:text=If%20no%20default%20value%20is,after%20the%20column%20data%20type.
 -- id serial primary KEY
 -- customerID 
 -- total - integer - amount cannot be less than 0
 -- isPaid - boolean 
 --
-
+CREATE TABLE orders (id SERIAL PRIMARY KEY, customerID numeric DEFAULT NULL, total INT, CHECK (total > 0), isPaid BOOLEAN);
+CREATE TABLE
 --
 
-\echo - Uncomment the code below to add records to the customers table
+-- Uncomment the code below to add records to the customers table
 -- INSERT INTO orders (customerID, total, isPaid) VALUES
 -- (1, 250, TRUE),
 -- (2, 190, FALSE),
@@ -53,45 +73,104 @@ CREATE DATABASE purchases;
 -- (1, 450, TRUE),
 -- (4, 120, FALSE),
 -- (2, 580, TRUE);
+INSERT INTO orders (customerID, total, isPaid) VALUES
+(1, 250, TRUE),
+(2, 190, FALSE),
+(3, 300, TRUE),
+(1, 450, TRUE),
+(4, 120, FALSE),
+(2, 580, TRUE);
+INSERT 0 6
 
 
-
-\echo - Find all paid orders include the firstname, email and total
+-- Find all paid orders include the firstname, email and total
+-- --
+SELECT customers.firstname, customers.email, orders.total FROM orders FULL OUTER JOIN customers ON orders.id = customers.id WHERE orders.ispaid IS TRUE;
+ firstname |          email           | total
+-----------+--------------------------+-------
+ Alex      | alex.taylor@example.com  |   250
+ Casey     | casey.morgan@example.com |   300
+ Riley     | riley.quinn@example.com  |   450
+           |                          |   580
+(4 rows)
 -- --
 
+-- Find all orders, including the firstname, lastname and email of the customer who made each order.
+-- --
+SELECT * FROM orders INNER JOIN customers ON orders.id = customers.id;
+ id | customerid | total | ispaid | id | firstname | lastname |           email
+----+------------+-------+--------+----+-----------+----------+---------------------------
+  1 |          1 |   250 | t      |  1 | Alex      | Taylor   | alex.taylor@example.com
+  2 |          2 |   190 | f      |  2 | Jordan    | Lee      | jordan.lee@example.com
+  3 |          3 |   300 | t      |  3 | Casey     | Morgan   | casey.morgan@example.com
+  4 |          1 |   450 | t      |  4 | Riley     | Quinn    | riley.quinn@example.com
+  5 |          4 |   120 | f      |  5 | Taylor    | Morgan   | taylor.morgan@example.com
+(5 rows)
 -- --
 
-\echo - Find all orders, including the firstname, lastname and email of the customer who made each order.
+-- Identify customers who have never made an order, return the first name and email.
+-- --
+-- joining on orders.customerid and checking if orders.id is NULL. This is the correct approach because if there's no matching order for a customer, orders.id will indeed be NULL, as there's no corresponding row in the orders table for that customer.
+SELECT customers.firstname, customers.email
+FROM customers
+LEFT JOIN orders ON customers.id = orders.customerid
+WHERE orders.id IS NULL;
+ firstname |           email
+-----------+---------------------------
+ Taylor    | taylor.morgan@example.com
 -- --
 
+-- List the total spending of each customer along with their first name, last name and email.
+-- --
+SELECT * FROM customers INNER JOIN orders ON customers.id = orders.id;
+ id | firstname | lastname |           email           | id | customerid | total | ispaid
+----+-----------+----------+---------------------------+----+------------+-------+--------
+  1 | Alex      | Taylor   | alex.taylor@example.com   |  1 |          1 |   250 | t
+  2 | Jordan    | Lee      | jordan.lee@example.com    |  2 |          2 |   190 | f
+  3 | Casey     | Morgan   | casey.morgan@example.com  |  3 |          3 |   300 | t
+  4 | Riley     | Quinn    | riley.quinn@example.com   |  4 |          1 |   450 | t
+  5 | Taylor    | Morgan   | taylor.morgan@example.com |  5 |          4 |   120 | f
+-- --
+
+-- Show a list of firstname, lastname for customers along with the number of orders they have made, including those customers who have not made any orders.
+-- --
+SELECT customers.firstname, customers.lastname, COUNT(orders.id) FROM customers LEFT JOIN orders ON customers.id = orders.customerid GROUP BY customers.id, customers.firstname, customers.lastname;
+ firstname | lastname | count
+-----------+----------+-------
+ Taylor    | Morgan   |     0
+ Riley     | Quinn    |     1
+ Jordan    | Lee      |     2
+ Alex      | Taylor   |     2
+ Casey     | Morgan   |     1
+(5 rows)
+--without including customers.id in the GROUP BY key word:
+SELECT customers.firstname, customers.lastname, COUNT(orders.id) FROM customers LEFT JOIN orders ON customers.id = orders.customerid GROUP BY customers.firstname, customers.lastname;
+ firstname | lastname | count
+-----------+----------+-------
+ Alex      | Taylor   |     2
+ Casey     | Morgan   |     1
+ Taylor    | Morgan   |     0
+ Jordan    | Lee      |     2
+ Riley     | Quinn    |     1
+(5 rows)
+-- --
+
+-- Find all customers who have spent more than 300 in total across all their orders.
+-- --
+SELECT customers.id, customers.firstname, customers.lastname, SUM(orders.total) FROM customers INNER JOIN orders ON customers.id = orders.customerid GROUP BY customers.id HAVING SUM(orders.total) > 300;
+ id | firstname | lastname | sum
+----+-----------+----------+-----
+  2 | Jordan    | Lee      | 770
+  1 | Alex      | Taylor   | 700
+(2 rows)
 -- --
 
 
-
-\echo - Identify customers who have never made an order, return the first name and email.
+-- For each order, list the order total alongside the email of the customer, include only orders with totals above 400.
 -- --
-
--- --
-
-
-\echo - List the total spending of each customer along with their first name, last name and email.
--- --
-
--- --
-
-\echo - Show a list of firstname, lastname for customers along with the number of orders they have made, including those customers who have not made any orders.
--- --
-
-
--- --
-
-\echo - Find all customers who have spent more than 300 in total across all their orders.
--- --
-
--- --
-
-
-\echo - For each order, list the order total alongside the email of the customer, include only orders with totals above 400.
--- --
-
+SELECT customers.email, SUM (orders.total) FROM customers INNER JOIN orders ON customers.id = orders.customerid GROUP BY customers.email HAVING SUM (orders.total) > 400;
+          email          | sum
+-------------------------+-----
+ alex.taylor@example.com | 700
+ jordan.lee@example.com  | 770
 -- --
