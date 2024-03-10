@@ -9,19 +9,32 @@ CREATE DATABASE purchases;
 
 
 --
-\echo - Create a table called customers
+-- Create a table called customers
  -- with the following columns
 -- id serial primary KEY
 -- firstname - string with 20 characters
 -- lastname - string with 50 characters
 -- email - string with 30 characters(unable to be null)
 --
+purchases=# CREATE TABLE customers (id SERIAL PRIMARY KEY, firstname VARCHAR(20), lastname VARCHAR(50), email VARCHAR(30) NOT NULL);
+CREATE TABLE
 
 --
 
-\echo See details of the table you created
+-- See details of the table you created
 -- 
+purchases=# \d customers
+                                     Table "public.customers"
+  Column   |         Type          | Collation | Nullable |                Default
+-----------+-----------------------+-----------+----------+---------------------------------------
+ id        | integer               |           | not null | nextval('customers_id_seq'::regclass)
+ firstname | character varying(20) |           |          |
+ lastname  | character varying(50) |           |          |
+ email     | character varying(30) |           | not null |
+Indexes:
+    "customers_pkey" PRIMARY KEY, btree (id)
 
+(END)
 --
 
 \echo - Uncomment the code below to add records to the customers table
