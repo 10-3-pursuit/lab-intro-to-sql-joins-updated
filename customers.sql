@@ -56,12 +56,14 @@ INSERT 0 5
 
 \echo - Create a table called orders
  with the following columns
+-- Note: If no default value is declared explicitly, the default value is the null value. This usually makes sense because a null value can be considered to represent unknown data. https://www.postgresql.org/docs/current/ddl-default.html#:~:text=If%20no%20default%20value%20is,after%20the%20column%20data%20type.
 -- id serial primary KEY
 -- customerID 
 -- total - integer - amount cannot be less than 0
 -- isPaid - boolean 
 --
-
+purchases=# CREATE TABLE orders (id SERIAL PRIMARY KEY, customerID numeric DEFAULT NULL, total INT, CHECK (total > 0), isPaid BOOLEAN);
+CREATE TABLE
 --
 
 \echo - Uncomment the code below to add records to the customers table
