@@ -37,7 +37,7 @@ Indexes:
 (END)
 --
 
-\echo - Uncomment the code below to add records to the customers table
+-- Uncomment the code below to add records to the customers table
 INSERT INTO customers (firstname, lastname, email) VALUES
 ('Alex', 'Taylor', 'alex.taylor@example.com'),
 ('Jordan', 'Lee', 'jordan.lee@example.com'),
@@ -54,8 +54,7 @@ purchases-# ('Taylor', 'Morgan', 'taylor.morgan@example.com');
 INSERT 0 5
 
 
-\echo - Create a table called orders
- with the following columns
+-- Create a table called orders with the following columns
 -- Note: If no default value is declared explicitly, the default value is the null value. This usually makes sense because a null value can be considered to represent unknown data. https://www.postgresql.org/docs/current/ddl-default.html#:~:text=If%20no%20default%20value%20is,after%20the%20column%20data%20type.
 -- id serial primary KEY
 -- customerID 
@@ -66,7 +65,7 @@ purchases=# CREATE TABLE orders (id SERIAL PRIMARY KEY, customerID numeric DEFAU
 CREATE TABLE
 --
 
-\echo - Uncomment the code below to add records to the customers table
+-- Uncomment the code below to add records to the customers table
 -- INSERT INTO orders (customerID, total, isPaid) VALUES
 -- (1, 250, TRUE),
 -- (2, 190, FALSE),
@@ -74,7 +73,14 @@ CREATE TABLE
 -- (1, 450, TRUE),
 -- (4, 120, FALSE),
 -- (2, 580, TRUE);
-
+INSERT INTO orders (customerID, total, isPaid) VALUES
+purchases-# (1, 250, TRUE),
+purchases-# (2, 190, FALSE),
+purchases-# (3, 300, TRUE),
+purchases-# (1, 450, TRUE),
+purchases-# (4, 120, FALSE),
+purchases-# (2, 580, TRUE);
+INSERT 0 6
 
 
 \echo - Find all paid orders include the firstname, email and total
