@@ -16,7 +16,7 @@ CREATE DATABASE purchases;
 -- lastname - string with 50 characters
 -- email - string with 30 characters(unable to be null)
 --
-purchases=# CREATE TABLE customers (id SERIAL PRIMARY KEY, firstname VARCHAR(20), lastname VARCHAR(50), email VARCHAR(30) NOT NULL);
+CREATE TABLE customers (id SERIAL PRIMARY KEY, firstname VARCHAR(20), lastname VARCHAR(50), email VARCHAR(30) NOT NULL);
 CREATE TABLE
 
 --
@@ -45,12 +45,12 @@ INSERT INTO customers (firstname, lastname, email) VALUES
 ('Riley', 'Quinn', 'riley.quinn@example.com'),
 ('Taylor', 'Morgan', 'taylor.morgan@example.com');
 -- Uncomment the code below to add records to the customers table
-purchases=# INSERT INTO customers (firstname, lastname, email) VALUES
-purchases-# ('Alex', 'Taylor', 'alex.taylor@example.com'),
-purchases-# ('Jordan', 'Lee', 'jordan.lee@example.com'),
-purchases-# ('Casey', 'Morgan', 'casey.morgan@example.com'),
-purchases-# ('Riley', 'Quinn', 'riley.quinn@example.com'),
-purchases-# ('Taylor', 'Morgan', 'taylor.morgan@example.com');
+INSERT INTO customers (firstname, lastname, email) VALUES
+('Alex', 'Taylor', 'alex.taylor@example.com'),
+('Jordan', 'Lee', 'jordan.lee@example.com'),
+('Casey', 'Morgan', 'casey.morgan@example.com'),
+('Riley', 'Quinn', 'riley.quinn@example.com'),
+('Taylor', 'Morgan', 'taylor.morgan@example.com');
 INSERT 0 5
 
 
@@ -61,7 +61,7 @@ INSERT 0 5
 -- total - integer - amount cannot be less than 0
 -- isPaid - boolean 
 --
-purchases=# CREATE TABLE orders (id SERIAL PRIMARY KEY, customerID numeric DEFAULT NULL, total INT, CHECK (total > 0), isPaid BOOLEAN);
+CREATE TABLE orders (id SERIAL PRIMARY KEY, customerID numeric DEFAULT NULL, total INT, CHECK (total > 0), isPaid BOOLEAN);
 CREATE TABLE
 --
 
@@ -108,8 +108,6 @@ SELECT * FROM orders INNER JOIN customers ON orders.id = customers.id;
 (5 rows)
 -- --
 
-
-
 -- Identify customers who have never made an order, return the first name and email.
 -- --
 -- joining on orders.customerid and checking if orders.id is NULL. This is the correct approach because if there's no matching order for a customer, orders.id will indeed be NULL, as there's no corresponding row in the orders table for that customer.
@@ -122,10 +120,9 @@ WHERE orders.id IS NULL;
  Taylor    | taylor.morgan@example.com
 -- --
 
-
 -- List the total spending of each customer along with their first name, last name and email.
 -- --
-purchases=# SELECT * FROM customers INNER JOIN orders ON customers.id = orders.id;
+SELECT * FROM customers INNER JOIN orders ON customers.id = orders.id;
  id | firstname | lastname |           email           | id | customerid | total | ispaid
 ----+-----------+----------+---------------------------+----+------------+-------+--------
   1 | Alex      | Taylor   | alex.taylor@example.com   |  1 |          1 |   250 | t
@@ -135,9 +132,17 @@ purchases=# SELECT * FROM customers INNER JOIN orders ON customers.id = orders.i
   5 | Taylor    | Morgan   | taylor.morgan@example.com |  5 |          4 |   120 | f
 -- --
 
-\echo - Show a list of firstname, lastname for customers along with the number of orders they have made, including those customers who have not made any orders.
+-- Show a list of firstname, lastname for customers along with the number of orders they have made, including those customers who have not made any orders.
 -- --
-
+purchases=# SELECT customers.firstname, customers.lastname, COUNT(orders.id) FROM customers LEFT JOIN orders ON customers.id = orders.customerid GROUP BY customers.id, customers.firstname, customers.lastname;
+ firstname | lastname | count
+-----------+----------+-------
+ Taylor    | Morgan   |     0
+ Riley     | Quinn    |     1
+ Jordan    | Lee      |     2
+ Alex      | Taylor   |     2
+ Casey     | Morgan   |     1
+(5 rows)
 
 -- --
 
