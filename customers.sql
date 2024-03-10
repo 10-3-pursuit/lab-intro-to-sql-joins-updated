@@ -23,7 +23,7 @@ CREATE TABLE
 
 -- See details of the table you created
 -- 
-purchases=# \d customers
+ \d customers
                                      Table "public.customers"
   Column   |         Type          | Collation | Nullable |                Default
 -----------+-----------------------+-----------+----------+---------------------------------------
@@ -38,14 +38,20 @@ Indexes:
 --
 
 \echo - Uncomment the code below to add records to the customers table
--- INSERT INTO customers (firstname, lastname, email) VALUES
--- ('Alex', 'Taylor', 'alex.taylor@example.com'),
--- ('Jordan', 'Lee', 'jordan.lee@example.com'),
--- ('Casey', 'Morgan', 'casey.morgan@example.com'),
--- ('Riley', 'Quinn', 'riley.quinn@example.com'),
--- ('Taylor', 'Morgan', 'taylor.morgan@example.com');
-
-
+INSERT INTO customers (firstname, lastname, email) VALUES
+('Alex', 'Taylor', 'alex.taylor@example.com'),
+('Jordan', 'Lee', 'jordan.lee@example.com'),
+('Casey', 'Morgan', 'casey.morgan@example.com'),
+('Riley', 'Quinn', 'riley.quinn@example.com'),
+('Taylor', 'Morgan', 'taylor.morgan@example.com');
+-- Uncomment the code below to add records to the customers table
+purchases=# INSERT INTO customers (firstname, lastname, email) VALUES
+purchases-# ('Alex', 'Taylor', 'alex.taylor@example.com'),
+purchases-# ('Jordan', 'Lee', 'jordan.lee@example.com'),
+purchases-# ('Casey', 'Morgan', 'casey.morgan@example.com'),
+purchases-# ('Riley', 'Quinn', 'riley.quinn@example.com'),
+purchases-# ('Taylor', 'Morgan', 'taylor.morgan@example.com');
+INSERT 0 5
 
 
 \echo - Create a table called orders
