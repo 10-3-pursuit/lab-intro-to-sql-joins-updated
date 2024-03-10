@@ -155,9 +155,9 @@ SELECT customers.firstname, customers.lastname, COUNT(orders.id) FROM customers 
 (5 rows)
 -- --
 
-\echo - Find all customers who have spent more than 300 in total across all their orders.
+-- Find all customers who have spent more than 300 in total across all their orders.
 -- --
-purchases=# SELECT customers.id, customers.firstname, customers.lastname, SUM(orders.total) FROM customers INNER JOIN orders ON customers.id = orders.customerid GROUP BY customers.id HAVING SUM(orders.total) > 300;
+SELECT customers.id, customers.firstname, customers.lastname, SUM(orders.total) FROM customers INNER JOIN orders ON customers.id = orders.customerid GROUP BY customers.id HAVING SUM(orders.total) > 300;
  id | firstname | lastname | sum
 ----+-----------+----------+-----
   2 | Jordan    | Lee      | 770
@@ -168,5 +168,9 @@ purchases=# SELECT customers.id, customers.firstname, customers.lastname, SUM(or
 
 \echo - For each order, list the order total alongside the email of the customer, include only orders with totals above 400.
 -- --
-
+purchases=# SELECT customers.email, SUM (orders.total) FROM customers INNER JOIN orders ON customers.id = orders.customerid GROUP BY customers.email HAVING SUM (orders.total) > 400;
+          email          | sum
+-------------------------+-----
+ alex.taylor@example.com | 700
+ jordan.lee@example.com  | 770
 -- --
