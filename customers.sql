@@ -83,14 +83,29 @@ purchases-# (2, 580, TRUE);
 INSERT 0 6
 
 
-\echo - Find all paid orders include the firstname, email and total
+-- Find all paid orders include the firstname, email and total
+-- --
+purchases=# SELECT customers.firstname, customers.email, orders.total FROM orders FULL OUTER JOIN customers ON orders.id = customers.id WHERE orders.ispaid IS TRUE;
+ firstname |          email           | total
+-----------+--------------------------+-------
+ Alex      | alex.taylor@example.com  |   250
+ Casey     | casey.morgan@example.com |   300
+ Riley     | riley.quinn@example.com  |   450
+           |                          |   580
+(4 rows)
 -- --
 
+-- Find all orders, including the firstname, lastname and email of the customer who made each order.
 -- --
-
-\echo - Find all orders, including the firstname, lastname and email of the customer who made each order.
--- --
-
+purchases=# SELECT * FROM orders INNER JOIN customers ON orders.id = customers.id;
+ id | customerid | total | ispaid | id | firstname | lastname |           email
+----+------------+-------+--------+----+-----------+----------+---------------------------
+  1 |          1 |   250 | t      |  1 | Alex      | Taylor   | alex.taylor@example.com
+  2 |          2 |   190 | f      |  2 | Jordan    | Lee      | jordan.lee@example.com
+  3 |          3 |   300 | t      |  3 | Casey     | Morgan   | casey.morgan@example.com
+  4 |          1 |   450 | t      |  4 | Riley     | Quinn    | riley.quinn@example.com
+  5 |          4 |   120 | f      |  5 | Taylor    | Morgan   | taylor.morgan@example.com
+(5 rows)
 -- --
 
 
