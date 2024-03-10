@@ -166,9 +166,9 @@ SELECT customers.id, customers.firstname, customers.lastname, SUM(orders.total) 
 -- --
 
 
-\echo - For each order, list the order total alongside the email of the customer, include only orders with totals above 400.
+-- For each order, list the order total alongside the email of the customer, include only orders with totals above 400.
 -- --
-purchases=# SELECT customers.email, SUM (orders.total) FROM customers INNER JOIN orders ON customers.id = orders.customerid GROUP BY customers.email HAVING SUM (orders.total) > 400;
+SELECT customers.email, SUM (orders.total) FROM customers INNER JOIN orders ON customers.id = orders.customerid GROUP BY customers.email HAVING SUM (orders.total) > 400;
           email          | sum
 -------------------------+-----
  alex.taylor@example.com | 700
