@@ -112,7 +112,13 @@ purchases=# SELECT * FROM orders INNER JOIN customers ON orders.id = customers.i
 
 \echo - Identify customers who have never made an order, return the first name and email.
 -- --
-
+purchases=# SELECT customers.firstname, customers.email
+purchases-# FROM customers
+purchases-# LEFT JOIN orders ON customers.id = orders.customerid
+purchases-# WHERE orders.id IS NULL;
+ firstname |           email
+-----------+---------------------------
+ Taylor    | taylor.morgan@example.com
 -- --
 
 
