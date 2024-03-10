@@ -74,18 +74,18 @@ CREATE TABLE
 -- (4, 120, FALSE),
 -- (2, 580, TRUE);
 INSERT INTO orders (customerID, total, isPaid) VALUES
-purchases-# (1, 250, TRUE),
-purchases-# (2, 190, FALSE),
-purchases-# (3, 300, TRUE),
-purchases-# (1, 450, TRUE),
-purchases-# (4, 120, FALSE),
-purchases-# (2, 580, TRUE);
+(1, 250, TRUE),
+(2, 190, FALSE),
+(3, 300, TRUE),
+(1, 450, TRUE),
+(4, 120, FALSE),
+(2, 580, TRUE);
 INSERT 0 6
 
 
 -- Find all paid orders include the firstname, email and total
 -- --
-purchases=# SELECT customers.firstname, customers.email, orders.total FROM orders FULL OUTER JOIN customers ON orders.id = customers.id WHERE orders.ispaid IS TRUE;
+SELECT customers.firstname, customers.email, orders.total FROM orders FULL OUTER JOIN customers ON orders.id = customers.id WHERE orders.ispaid IS TRUE;
  firstname |          email           | total
 -----------+--------------------------+-------
  Alex      | alex.taylor@example.com  |   250
@@ -97,7 +97,7 @@ purchases=# SELECT customers.firstname, customers.email, orders.total FROM order
 
 -- Find all orders, including the firstname, lastname and email of the customer who made each order.
 -- --
-purchases=# SELECT * FROM orders INNER JOIN customers ON orders.id = customers.id;
+SELECT * FROM orders INNER JOIN customers ON orders.id = customers.id;
  id | customerid | total | ispaid | id | firstname | lastname |           email
 ----+------------+-------+--------+----+-----------+----------+---------------------------
   1 |          1 |   250 | t      |  1 | Alex      | Taylor   | alex.taylor@example.com
@@ -110,21 +110,29 @@ purchases=# SELECT * FROM orders INNER JOIN customers ON orders.id = customers.i
 
 
 
-\echo - Identify customers who have never made an order, return the first name and email.
+-- Identify customers who have never made an order, return the first name and email.
 -- --
-purchases=# SELECT customers.firstname, customers.email
-purchases-# FROM customers
-purchases-# LEFT JOIN orders ON customers.id = orders.customerid
-purchases-# WHERE orders.id IS NULL;
+-- joining on orders.customerid and checking if orders.id is NULL. This is the correct approach because if there's no matching order for a customer, orders.id will indeed be NULL, as there's no corresponding row in the orders table for that customer.
+SELECT customers.firstname, customers.email
+FROM customers
+LEFT JOIN orders ON customers.id = orders.customerid
+WHERE orders.id IS NULL;
  firstname |           email
 -----------+---------------------------
  Taylor    | taylor.morgan@example.com
 -- --
 
 
-\echo - List the total spending of each customer along with their first name, last name and email.
+-- List the total spending of each customer along with their first name, last name and email.
 -- --
-
+purchases=# SELECT * FROM customers INNER JOIN orders ON customers.id = orders.id;
+ id | firstname | lastname |           email           | id | customerid | total | ispaid
+----+-----------+----------+---------------------------+----+------------+-------+--------
+  1 | Alex      | Taylor   | alex.taylor@example.com   |  1 |          1 |   250 | t
+  2 | Jordan    | Lee      | jordan.lee@example.com    |  2 |          2 |   190 | f
+  3 | Casey     | Morgan   | casey.morgan@example.com  |  3 |          3 |   300 | t
+  4 | Riley     | Quinn    | riley.quinn@example.com   |  4 |          1 |   450 | t
+  5 | Taylor    | Morgan   | taylor.morgan@example.com |  5 |          4 |   120 | f
 -- --
 
 \echo - Show a list of firstname, lastname for customers along with the number of orders they have made, including those customers who have not made any orders.
