@@ -35,14 +35,15 @@ INSERT INTO customers (firstname, lastname, email) VALUES
 
 
 \echo - Create a table called orders
- with the following columns
+--  with the following columns
 -- id serial primary KEY
 -- customerID 
 -- total - integer - amount cannot be less than 0
 -- isPaid - boolean 
 --
-CREATE TABLE orders (id SERIAL PRIMARY KEY, customerID, total INT CHECK (total < 0), isPaid BOOLEAN);
+CREATE TABLE orders (id SERIAL PRIMARY KEY, customerID INT, total INT CHECK (total >= 0), isPaid BOOLEAN);
 --
+
 
 \echo - Uncomment the code below to add records to the customers table
 INSERT INTO orders (customerID, total, isPaid) VALUES
@@ -59,7 +60,7 @@ INSERT INTO orders (customerID, total, isPaid) VALUES
 -- --
 SELECT c.firstname, c.email, SUM(o.total) AS total
 FROM customers c JOIN orders o ON c.id = o.customerID
-WHERE o.status = `paid`
+WHERE isPaid = TRUE
 GROUP BY c.firstname, c.email;
 -- --
 
@@ -73,30 +74,30 @@ FROM orders o JOIN customers c ON o.customerID = c.id;
 
 \echo - Identify customers who have never made an order, return the first name and email.
 -- --
-SELECT c.firstname, c.email FROM customers c LEFT JOIN orders o ON c.id = o customer_id WHERE o.id IS NULL;
+SELECT c.firstname, c.email FROM customers c LEFT JOIN orders o ON c.id = o.customerID WHERE o.id IS NULL;
 
 -- --
 
 
 \echo - List the total spending of each customer along with their first name, last name and email.
 -- --
-SELECT c.firstname, c.lastname, c.email, COALASCE(SUM(o.total), 0) AS total_spending 
-FROM customers c LEFT JOIN orders o ON c.id = o.customer_id
-GROUP BY c.id, c.firstname, c.lastname, c.email;
+SELECT c.firstname, c.lastname, c.email, SUM(o.total) AS total_spending 
+FROM customers c LEFT JOIN orders o ON c.id = o.customerID
+GROUP BY c.firstname, c.lastname, c.email;
 
 -- --
 
 \echo - Show a list of firstname, lastname for customers along with the number of orders they have made, including those customers who have not made any orders.
 -- --
-SELECT c.firstname, c.lastname, COUNT(o.id) AS num.orders FROM customers c
-LEFT JOIN orders o ON c.id = o.customer_id GROUP BY c.id, c.firstname, c.lastname;
+SELECT c.firstname, c.lastname, COUNT(o.id) AS orders FROM customers c
+LEFT JOIN orders o ON c.id = o.customerID GROUP BY c.id, c.firstname, c.lastname;
 
 -- --
 
 \echo - Find all customers who have spent more than 300 in total across all their orders.
 -- --
 SELECT c.firstname, c.lastname, c.email, SUM(o.total) AS total_spending 
-FROM customers c JOIN orders o ON c.id = o.customer_id GROUP BY c.id, c.firstname, c.lastname
+FROM customers c JOIN orders o ON c.id = o.customerID GROUP BY c.id, c.firstname, c.lastname
 HAVING SUM(o.total) > 300;
 
 -- --
@@ -104,7 +105,6 @@ HAVING SUM(o.total) > 300;
 
 \echo - For each order, list the order total alongside the email of the customer, include only orders with totals above 400.
 -- --
-SELECT o.total AS order_total, c.email FROM orders o JOIN customers c ON o.customer_id = c.id
+SELECT o.total AS order_total, c.email FROM orders o JOIN customers c ON o.customerID = c.id
 WHERE o.total > 400;
-
 -- --
